@@ -1,3 +1,4 @@
 /build
 /captures
 .externalNativeBuild
+local.properties
