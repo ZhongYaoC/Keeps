@@ -6,10 +6,11 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-
-import org.litepal.tablemanager.Connector;
+import android.support.v7.widget.Toolbar;
 
 public class RegisterActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -18,8 +19,11 @@ public class RegisterActivity extends AppCompatActivity {
 
         Button addUser = findViewById(R.id.reg);
         Button back = findViewById(R.id.back);
+        toolbar = findViewById(R.id.toolbar2);
         final EditText account_reg = findViewById(R.id.account_reg);
         final EditText password_reg = findViewById(R.id.password_reg);
+
+        setSupportActionBar(toolbar);
 
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
