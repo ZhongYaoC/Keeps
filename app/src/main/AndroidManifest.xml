@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.zhong.keeps">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <application
         android:name="org.litepal.LitePalApplication"
         android:allowBackup="true"
@@ -20,7 +22,8 @@
         </activity>
         <activity android:name=".RegisterActivity" />
         <activity android:name=".SettingActivity" />
-        <activity android:name=".SearchActivity"></activity>
+        <activity android:name=".SearchActivity" />
+        <activity android:name=".NetworkTestActivity"></activity>
     </application>
 
 </manifest>
