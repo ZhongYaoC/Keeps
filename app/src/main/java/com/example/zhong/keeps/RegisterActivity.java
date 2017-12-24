@@ -44,4 +44,17 @@ public class RegisterActivity extends AppCompatActivity {
         });
 
     }
+
+    public void onUserRegisterReturn(final Boolean ok) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (ok) {
+                    // if login succeeded
+                } else {
+                    // if failed
+                }
+            }
+        });
+    }
 }
