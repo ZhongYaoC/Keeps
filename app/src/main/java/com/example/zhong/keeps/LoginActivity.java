@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -24,6 +25,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText passwordEdit;
     private Button login;
     private TextView register;
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +36,8 @@ public class LoginActivity extends AppCompatActivity {
         passwordEdit = findViewById(R.id.password);
         login = findViewById(R.id.login);
         register = findViewById(R.id.register);
+        toolbar = findViewById(R.id.toolbar1);
+        setSupportActionBar(toolbar);
 
         //Create DB
         Connector.getDatabase();
