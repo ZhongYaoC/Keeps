@@ -9,6 +9,15 @@ import org.litepal.crud.DataSupport;
 public class UserInfo extends DataSupport {
     private String user;
     private String password;
+    private Boolean online;
+
+    public Boolean getOnline() {
+        return online;
+    }
+
+    public void setOnline(Boolean online) {
+        this.online = online;
+    }
 
     public String getUser() {
         return user;
