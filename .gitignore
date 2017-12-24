@@ -2,6 +2,8 @@
 /captures
 /.gradle
 /.idea
+.gradlegit
+.idea
 .externalNativeBuild
 local.properties
 keeps.iml
