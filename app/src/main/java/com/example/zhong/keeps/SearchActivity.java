@@ -20,11 +20,14 @@ public class SearchActivity extends AppCompatActivity {
     private SearchView searchView;
     private ListView searchListview;
     private KnowledgePoint root;
+    private List<KnowledgePoint> selectKps;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search);
+
+        root = MainActivity.root;
 
         toolbar = findViewById(R.id.toolbar4);
         searchView = findViewById(R.id.searchView);
@@ -35,7 +38,9 @@ public class SearchActivity extends AppCompatActivity {
         searchListview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-
+                MainActivity.currentKP = selectKps.get(i);
+                setResult(RESULT_OK);
+                finish();
             }
         });
 
@@ -50,7 +55,7 @@ public class SearchActivity extends AppCompatActivity {
             @Override
             public boolean onQueryTextChange(String newText) {
                 if (!TextUtils.isEmpty(newText)) {
-                    List<KnowledgePoint> selectKps = selectKPs(root,newText);
+                    selectKps = selectKPs(root,newText);
                     ChildKPsAdapter adapter = new ChildKPsAdapter(SearchActivity.this,
                             R.layout.child_kp_item, selectKps);
                     searchListview.setAdapter(adapter);
@@ -71,7 +76,7 @@ public class SearchActivity extends AppCompatActivity {
     }
 
     private void dfs(ArrayList<KnowledgePoint> kps, KnowledgePoint currentKP, String key) {
-        if (currentKP.getName().indexOf(key) != -1) {
+        if (currentKP.getName().contains(key)) {
             kps.add(currentKP);
         }
         List<KnowledgePoint> childKPList = currentKP.getChildKPList();

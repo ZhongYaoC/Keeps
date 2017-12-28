@@ -7,8 +7,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.support.v7.widget.Toolbar;
@@ -16,20 +14,22 @@ import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import us.feras.mdv.MarkdownView;
 
 public class MainActivity extends AppCompatActivity {
 
+    private final int SETTINGS = 1;
+    private final int SEARCH = 2;
+
     //private List<SubTitle> subTitleList = new ArrayList<>();
     private ListView listView;
     private TextView root_textView;
     private MarkdownView markdownView;
     private Toolbar toolbar;
-    String account,password;
-    private KnowledgePoint root, currentKP;
+    String account, password;
+    public static KnowledgePoint root, currentKP;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +53,7 @@ public class MainActivity extends AppCompatActivity {
         UtilKt.initKnowledgePoints(account, password, MainActivity.this);
     }
 
-    private void initCurrentKP() {
+    private void drawCurrentKP() {
         initCurrentTitle();
         initTitles();
     }
@@ -73,7 +73,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 currentKP = currentKP.getChildKPList().get(i);
-                initCurrentKP();
+                drawCurrentKP();
             }
         });
     }
@@ -111,11 +111,16 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case 1: {
-                if (requestCode == 1) {
+            case SETTINGS: {
+                if (resultCode == 1) {
                     UtilKt.initKnowledgePoints(account,password,MainActivity.this);
                 }
                 break;
+            }
+            case SEARCH: {
+                if (resultCode == 1) {
+                    drawCurrentKP();
+                }
             }
             default:
         }
@@ -127,12 +132,12 @@ public class MainActivity extends AppCompatActivity {
             case R.id.search:
                 //Search
                 Intent intent_search = new Intent(MainActivity.this,SearchActivity.class);
-                startActivity(intent_search);
+                startActivityForResult(intent_search, SEARCH);
                 break;
             case R.id.settings:
                 //activity
                 Intent intent_set = new Intent(MainActivity.this,SettingActivity.class);
-                startActivityForResult(intent_set,1);
+                startActivityForResult(intent_set,SETTINGS);
                 break;
             default:
         }
