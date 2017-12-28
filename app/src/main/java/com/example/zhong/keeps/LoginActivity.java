@@ -100,6 +100,11 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (ok) {
+                    UserInfo user = new UserInfo();
+                    user.setUser(accountEdit.getText().toString());
+                    user.setPassword(passwordEdit.getText().toString());
+                    user.setOnline(1);
+                    user.save();
                     // if login succeeded
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                     startActivity(intent);
