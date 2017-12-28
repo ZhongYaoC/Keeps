@@ -16,6 +16,9 @@ class NetworkTestActivity : AppCompatActivity() {
         bt_xml.setOnClickListener {
             //initKnowledgePoints("root","123456", NetworkTestActivity@this)
         }
+        bt_content.setOnClickListener {
+            initKnowledgePointsTest("root", "123456", NetworkTestActivity@this)
+        }
     }
 
     fun onLoginResponse(ok: Boolean) {
@@ -29,6 +32,15 @@ class NetworkTestActivity : AppCompatActivity() {
     }
 
     fun onInitKnowledgePointsReturn(ok: Boolean, root: KnowledgePoint?) {
-
+        runOnUiThread {
+            if (ok) {
+                if (root != null && root.childKPList != null) {
+                    markdownView.loadMarkdown(root.childKPList?.get(0)?.markdownContent)
+                }
+            } else {
+                Toast.makeText(NetworkTestActivity@this, "get content failed", Toast.LENGTH_SHORT)
+                        .show()
+            }
+        }
     }
 }
