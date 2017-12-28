@@ -11,7 +11,7 @@ import java.net.URL
 import java.util.zip.ZipInputStream
 
 
-val addr: String = "http://10.109.60.208:8080/keepsserver-1.0-SNAPSHOT"
+val addr: String = "http://10.103.1.144:8080/keepsserver-1.0-SNAPSHOT"
 val goodResponse = "<status>0</status>"
 val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
