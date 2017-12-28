@@ -7,10 +7,13 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.support.v7.widget.Toolbar;
+import android.widget.Toast;
 
 public class RegisterActivity extends AppCompatActivity {
 
     private Toolbar toolbar;
+    private EditText account_reg;
+    private EditText password_reg;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,19 +23,18 @@ public class RegisterActivity extends AppCompatActivity {
         Button addUser = findViewById(R.id.reg);
         Button back = findViewById(R.id.back);
         toolbar = findViewById(R.id.toolbar2);
-        final EditText account_reg = findViewById(R.id.account_reg);
-        final EditText password_reg = findViewById(R.id.password_reg);
+        account_reg = findViewById(R.id.account_reg);
+        password_reg = findViewById(R.id.password_reg);
 
         setSupportActionBar(toolbar);
 
         addUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //Insert User
-                UserInfo user = new UserInfo();
-                user.setUser(account_reg.getText().toString());
-                user.setPassword(password_reg.getText().toString());
-                user.save();
+
+                UtilKt.userRegister(account_reg.getText().toString(),
+                        password_reg.getText().toString(),
+                        RegisterActivity.this);
             }
         });
 
@@ -41,9 +43,8 @@ public class RegisterActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(RegisterActivity.this,
-                        MainActivity.class);
+                        LoginActivity.class);
                 startActivity(intent);
-
             }
         });
 
@@ -55,8 +56,21 @@ public class RegisterActivity extends AppCompatActivity {
             public void run() {
                 if (ok) {
                     // if login succeeded
+
+                    //Insert User
+                    UserInfo user = new UserInfo();
+                    user.setUser(account_reg.getText().toString());
+                    user.setPassword(password_reg.getText().toString());
+                    user.setOnline(1);
+                    user.save();
+
+                    Intent intent = new Intent(RegisterActivity.this,
+                            MainActivity.class);
+                    startActivity(intent);
                 } else {
                     // if failed
+                    Toast.makeText(RegisterActivity.this,"注册失败",
+                            Toast.LENGTH_SHORT).show();
                 }
             }
         });

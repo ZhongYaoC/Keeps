@@ -42,6 +42,7 @@ public class LoginActivity extends AppCompatActivity {
         //Create DB
         Connector.getDatabase();
 
+        /*
         login.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -63,7 +64,7 @@ public class LoginActivity extends AppCompatActivity {
                             "account or password is invalid",Toast.LENGTH_SHORT).show();
                 }
             }
-        });
+        });*/
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,8 +101,13 @@ public class LoginActivity extends AppCompatActivity {
             public void run() {
                 if (ok) {
                     // if login succeeded
+                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    startActivity(intent);
+
                 } else {
                     // if failed
+                    Toast.makeText(LoginActivity.this,
+                            "account or password is invalid",Toast.LENGTH_SHORT).show();
                 }
             }
         });

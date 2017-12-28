@@ -13,23 +13,23 @@ import java.util.List;
  * Created by zhong on 17-12-22.
  */
 
-public class SubtitleAdapter extends ArrayAdapter<SubTitle> {
+public class ChildKPsAdapter extends ArrayAdapter<KnowledgePoint> {
 
     private int resourceId;
 
-    public SubtitleAdapter(Context context, int textViewResourceId,
-                           List<SubTitle> objects){
+    public ChildKPsAdapter(Context context, int textViewResourceId,
+                           List<KnowledgePoint> objects){
         super(context,textViewResourceId,objects);
         resourceId = textViewResourceId;
     }
 
     @Override
     public View getView(int position, View convertView,  ViewGroup parent) {
-        SubTitle subTitle = getItem(position);
+        KnowledgePoint kp = getItem(position);
         View view = LayoutInflater.from(getContext()).inflate(resourceId,
                 parent,false);
-        TextView titleName = view.findViewById(R.id.title_name);
-        titleName.setText(subTitle.getSubtitle());
+        TextView titleName = view.findViewById(R.id.name);
+        titleName.setText(kp.getName());
         return view;
     }
 }
