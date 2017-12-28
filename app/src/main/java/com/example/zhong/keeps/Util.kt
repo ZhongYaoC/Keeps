@@ -11,7 +11,7 @@ import java.net.URL
 import java.util.zip.ZipInputStream
 
 
-val addr: String = "http://10.109.60.208:8080/keepsserver-1.0-SNAPSHOT"
+val addr: String = "http://10.103.1.144:8080/keepsserver-1.0-SNAPSHOT"
 val goodResponse = "<status>0</status>"
 val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
@@ -85,7 +85,7 @@ fun userRegister(username: String, password: String, activity: RegisterActivity)
     }).start()
 }
 
-fun initKnowledgePoints(username: String, password: String, activity: AppCompatActivity) {
+fun initKnowledgePoints(username: String, password: String, activity: MainActivity) {
     Thread(Runnable {
         // get structure xml
         val url = URL("$addr/GetKPStructureXml?username=$username&password=$password")
@@ -118,6 +118,8 @@ fun initKnowledgePoints(username: String, password: String, activity: AppCompatA
         userDataDir.mkdir()
         val userDir = File(userDataDir, username)
         userDir.mkdir()
+        val userContentDir = File(userDir, "content")
+        userContentDir.mkdir()
         val structureFile = File(userDir, "kp_structure.xml")
         val writer = PrintWriter(structureFile)
         writer.print(sb.toString())
@@ -173,9 +175,106 @@ fun initKnowledgePoints(username: String, password: String, activity: AppCompatA
         parser.next()
         val rootKnowledgePoint = constructKP(parser, null, username, activity)
 
-        (activity as NetworkTestActivity).onInitKnowledgePointsReturn(true, rootKnowledgePoint)
+        activity.onInitKnowledgePointsReturn(true, rootKnowledgePoint)
     }).start()
 }
+
+
+fun initKnowledgePointsTest(username: String, password: String, activity: NetworkTestActivity) {
+    Thread(Runnable {
+        // get structure xml
+        val url = URL("$addr/GetKPStructureXml?username=$username&password=$password")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+        val reader = BufferedReader(InputStreamReader(connection.inputStream))
+        val sb = StringBuilder()
+        var line: String?
+        while (true) {
+            line = reader.readLine()
+            if (line != null) {
+                sb.appendln(line)
+            } else {
+                break
+            }
+        }
+        reader.close()
+        connection.disconnect()
+        val response = sb.toString()
+
+        Log.d("Xml", response)
+        // if bad response
+        if (response == "$badResponse\n") {
+            (activity as NetworkTestActivity).onInitKnowledgePointsReturn(false, null)
+            return@Runnable
+        }
+
+        // save xml file
+        val userDataDir = File(activity.filesDir, "userdata")
+        userDataDir.mkdir()
+        val userDir = File(userDataDir, username)
+        userDir.mkdir()
+        val userContentDir = File(userDir, "content")
+        userContentDir.mkdir()
+        val structureFile = File(userDir, "kp_structure.xml")
+        val writer = PrintWriter(structureFile)
+        writer.print(sb.toString())
+        writer.close()
+
+        // get user content
+        val urlForContent = URL("$addr/GetKPContentZip?username=$username&password=$password")
+        val connectionForContent = urlForContent.openConnection() as HttpURLConnection
+        connectionForContent.requestMethod = "GET"
+        val inputStream = connectionForContent.inputStream
+
+        val buf = ByteArray(1024)
+        val contentZipFile = File("${activity.filesDir}/userdata/$username/content.zip")
+        var size: Int
+
+        val fos = FileOutputStream(contentZipFile)
+        while (true) {
+            size = inputStream.read(buf)
+            if (size >= 0) {
+                fos.write(buf, 0, size)
+            } else {
+                break
+            }
+        }
+        fos.close()
+
+        // unzip file
+        val buffer = ByteArray(1024)
+        val zis = ZipInputStream(FileInputStream(contentZipFile))
+        var zipEntry = zis.nextEntry
+        while (zipEntry != null) {
+            val fileName = zipEntry.name
+            val extractedFile = File("${activity.filesDir}/userdata/$username/content/$fileName")
+            val fos = FileOutputStream(extractedFile)
+            while (true) {
+                size = zis.read(buffer)
+                if (size > 0) {
+                    fos.write(buffer, 0, size)
+                } else {
+                    break;
+                }
+            }
+            fos.close()
+            zipEntry = zis.nextEntry
+        }
+        zis.closeEntry()
+        zis.close()
+
+        // construct from xml
+        val factory = XmlPullParserFactory.newInstance()
+        val parser = factory.newPullParser()
+        parser.setInput(StringReader(response))
+        parser.next()
+        val rootKnowledgePoint = constructKP(parser, null, username, activity)
+
+        activity.onInitKnowledgePointsReturn(true, rootKnowledgePoint)
+    }).start()
+}
+
+
 
 
 private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, username: String,
