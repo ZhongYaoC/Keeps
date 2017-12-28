@@ -11,7 +11,7 @@ import java.net.URL
 import java.util.zip.ZipInputStream
 
 
-val addr: String = "http://10.103.1.144:8080/keepsserver-1.0-SNAPSHOT"
+val addr: String = "http://10.109.34.210:8080/keepsserver-1.0-SNAPSHOT"
 val goodResponse = "<status>0</status>"
 val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
@@ -109,7 +109,7 @@ fun initKnowledgePoints(username: String, password: String, activity: MainActivi
         Log.d("Xml", response)
         // if bad response
         if (response == "$badResponse\n") {
-            (activity as NetworkTestActivity).onInitKnowledgePointsReturn(false, null)
+            activity.onInitKnowledgePointsReturn(false, null)
             return@Runnable
         }
 
@@ -204,7 +204,7 @@ fun initKnowledgePointsTest(username: String, password: String, activity: Networ
         Log.d("Xml", response)
         // if bad response
         if (response == "$badResponse\n") {
-            (activity as NetworkTestActivity).onInitKnowledgePointsReturn(false, null)
+            activity.onInitKnowledgePointsReturn(false, null)
             return@Runnable
         }
 
