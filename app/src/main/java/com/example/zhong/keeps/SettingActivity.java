@@ -54,7 +54,7 @@ public class SettingActivity extends AppCompatActivity {
         });
     }
 
-    public void syncDataToServerReturn(final Boolean ok) {
+    public void onSyncDataToServerReturn(final Boolean ok) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
