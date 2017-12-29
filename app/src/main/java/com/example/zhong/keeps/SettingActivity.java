@@ -60,7 +60,8 @@ public class SettingActivity extends AppCompatActivity {
             public void run() {
                 if (ok) {
                     setResult(1);
-                    finish();
+                    Toast.makeText(SettingActivity.this,"同步成功"
+                    ,Toast.LENGTH_SHORT).show();
                 } else {
                     Toast.makeText(SettingActivity.this,"同步失败"
                     ,Toast.LENGTH_SHORT).show();
