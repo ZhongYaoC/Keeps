@@ -17,7 +17,7 @@ val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
 val fuckResponse = "<status>3</status>"
 
-fun userLoginTest(username: String, password: String, activity: NetworkTestActivity) {
+fun userLoginTest(username: String, password: String, activity: TestActivity) {
     Thread(Runnable {
         val url = URL("$addr/UserLogin?username=$username&password=$password")
         // val url = URL("http://www.baidu.com")
@@ -184,7 +184,7 @@ fun initKnowledgePoints(username: String, password: String, activity: MainActivi
 }
 
 
-fun initKnowledgePointsTest(username: String, password: String, activity: NetworkTestActivity) {
+fun initKnowledgePointsTest(username: String, password: String, activity: TestActivity) {
     Thread(Runnable {
         // get structure xml
         val url = URL("$addr/GetKPStructureXml?username=$username&password=$password")
@@ -336,7 +336,7 @@ private fun constructXmlFromKP(currentKP: KnowledgePoint): String {
 fun saveDataChanges(username: String, password: String, context: Context,
                     root: KnowledgePoint): Boolean {
     val KPStructureXmlString = constructXmlFromKP(root)
-    val printWriter = PrintWriter("${context.filesDir}")
+    val printWriter = PrintWriter("${context.filesDir}/userdata/$username/kp_structure.xml")
     return true
 }
 

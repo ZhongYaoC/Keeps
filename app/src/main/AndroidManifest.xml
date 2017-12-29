@@ -31,7 +31,7 @@
         <activity
             android:name=".SearchActivity"
             android:label="Search" />
-        <activity android:name=".NetworkTestActivity" />
+        <activity android:name=".TestActivity" />
         <activity android:name=".ContentActivity" />
         <activity android:name=".ContentEditActivity"></activity>
     </application>
