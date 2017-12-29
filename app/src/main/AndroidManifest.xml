@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity" >
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,9 +21,7 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:label="Login">
-
-        </activity>
+            android:label="Login"></activity>
         <activity
             android:name=".RegisterActivity"
             android:label="Register" />
@@ -34,7 +32,8 @@
             android:name=".SearchActivity"
             android:label="Search" />
         <activity android:name=".NetworkTestActivity" />
-        <activity android:name=".ContentActivity"></activity>
+        <activity android:name=".ContentActivity" />
+        <activity android:name=".ContentEditActivity"></activity>
     </application>
 
 </manifest>
