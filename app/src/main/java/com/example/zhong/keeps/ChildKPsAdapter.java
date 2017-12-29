@@ -32,4 +32,9 @@ public class ChildKPsAdapter extends ArrayAdapter<KnowledgePoint> {
         titleName.setText(kp.getName());
         return view;
     }
+
+    /*@Override
+    public int getCount() {
+        return  5;
+    }*/
 }

@@ -17,6 +17,7 @@ public class SettingActivity extends AppCompatActivity {
     //private List<Settings> settingsList = new ArrayList<>();
     private Toolbar toolbar;
     private Button log_out,syn;
+    private String account,password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +45,9 @@ public class SettingActivity extends AppCompatActivity {
         syn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                account = MainActivity.account;
+                password = MainActivity.password;
+                UtilKt.syncDataToServer(account,password,SettingActivity.this);
                 setResult(1);
                 finish();
             }
