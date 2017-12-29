@@ -11,7 +11,7 @@ import java.net.URL
 import java.util.zip.ZipInputStream
 
 
-val addr: String = "http://10.109.34.210:8080/keepsserver-1.0-SNAPSHOT"
+val addr: String = "http://10.116.0.130:8080/keepsserver-1.0-SNAPSHOT"
 val goodResponse = "<status>0</status>"
 val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
@@ -152,17 +152,21 @@ fun initKnowledgePoints(username: String, password: String, activity: MainActivi
         var zipEntry = zis.nextEntry
         while (zipEntry != null) {
             val fileName = zipEntry.name
-            val extractedFile = File("${activity.filesDir}/userdata/$username/content/$fileName")
-            val fos = FileOutputStream(extractedFile)
-            while (true) {
-                size = zis.read(buffer)
-                if (size > 0) {
-                    fos.write(buffer, 0, size)
-                } else {
-                    break;
+            val extractedFile = File("${activity.filesDir}/userdata/$username/$fileName")
+            if (extractedFile.isDirectory) {
+                extractedFile.mkdir()
+            } else {
+                val fos = FileOutputStream(extractedFile)
+                while (true) {
+                    size = zis.read(buffer)
+                    if (size > 0) {
+                        fos.write(buffer, 0, size)
+                    } else {
+                        break;
+                    }
                 }
+                fos.close()
             }
-            fos.close()
             zipEntry = zis.nextEntry
         }
         zis.closeEntry()
@@ -247,17 +251,21 @@ fun initKnowledgePointsTest(username: String, password: String, activity: Networ
         var zipEntry = zis.nextEntry
         while (zipEntry != null) {
             val fileName = zipEntry.name
-            val extractedFile = File("${activity.filesDir}/userdata/$username/content/$fileName")
-            val fos = FileOutputStream(extractedFile)
-            while (true) {
-                size = zis.read(buffer)
-                if (size > 0) {
-                    fos.write(buffer, 0, size)
-                } else {
-                    break;
+            val extractedFile = File("${activity.filesDir}/userdata/$username/$fileName")
+            if (extractedFile.isDirectory) {
+                extractedFile.mkdir()
+            } else {
+                val fos = FileOutputStream(extractedFile)
+                while (true) {
+                    size = zis.read(buffer)
+                    if (size > 0) {
+                        fos.write(buffer, 0, size)
+                    } else {
+                        break;
+                    }
                 }
+                fos.close()
             }
-            fos.close()
             zipEntry = zis.nextEntry
         }
         zis.closeEntry()
@@ -273,9 +281,6 @@ fun initKnowledgePointsTest(username: String, password: String, activity: Networ
         activity.onInitKnowledgePointsReturn(true, rootKnowledgePoint)
     }).start()
 }
-
-
-
 
 private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, username: String,
                         context: Context): KnowledgePoint {
@@ -320,4 +325,8 @@ private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, userna
         }
     }
     throw Exception()
+}
+
+fun updateKnowledgePoints(username: String, password: String, activity: AppCompatActivity) {
+
 }
