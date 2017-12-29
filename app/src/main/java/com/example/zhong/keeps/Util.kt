@@ -8,7 +8,9 @@ import org.xmlpull.v1.XmlPullParserFactory
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
+import java.util.zip.ZipEntry
 import java.util.zip.ZipInputStream
+import java.util.zip.ZipOutputStream
 
 
 val addr: String = "http://10.116.0.130:8080/keepsserver-1.0-SNAPSHOT"
@@ -16,6 +18,28 @@ val goodResponse = "<status>0</status>"
 val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
 val fuckResponse = "<status>3</status>"
+
+fun userLogin(username: String, password: String, activity: LoginActivity) {
+    Thread(Runnable {
+        val url = URL("$addr/UserLogin?username=$username&password=$password")
+        val connection = url.openConnection() as HttpURLConnection
+        connection.requestMethod = "GET"
+        val reader = BufferedReader(InputStreamReader(connection.inputStream))
+        val sb = StringBuilder()
+        var line: String?
+        while (true) {
+            line = reader.readLine()
+            if (line != null) {
+                sb.appendln(line)
+            } else {
+                break
+            }
+        }
+        reader.close()
+        connection.disconnect()
+        activity.onUserLoginReturn(sb.toString() == "$goodResponse\n")
+    }).start()
+}
 
 fun userLoginTest(username: String, password: String, activity: TestActivity) {
     Thread(Runnable {
@@ -38,28 +62,6 @@ fun userLoginTest(username: String, password: String, activity: TestActivity) {
         reader.close()
         connection.disconnect()
         activity.onLoginResponse(sb.toString() == "$goodResponse\n")
-    }).start()
-}
-
-fun userLogin(username: String, password: String, activity: LoginActivity) {
-    Thread(Runnable {
-        val url = URL("$addr/UserLogin?username=$username&password=$password")
-        val connection = url.openConnection() as HttpURLConnection
-        connection.requestMethod = "GET"
-        val reader = BufferedReader(InputStreamReader(connection.inputStream))
-        val sb = StringBuilder()
-        var line: String?
-        while (true) {
-            line = reader.readLine()
-            if (line != null) {
-                sb.appendln(line)
-            } else {
-                break
-            }
-        }
-        reader.close()
-        connection.disconnect()
-        activity.onUserLoginReturn(sb.toString() == "$goodResponse\n")
     }).start()
 }
 
@@ -323,6 +325,18 @@ private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, userna
     throw Exception()
 }
 
+fun saveDataChanges(username: String, password: String, context: Context,
+                    root: KnowledgePoint) {
+    // update structure xml
+    val kpStructureXmlString = constructXmlFromKP(root)
+    val printWriter = PrintWriter("${context.filesDir}/userdata/$username/kp_structure.xml")
+    printWriter.print(kpStructureXmlString)
+    printWriter.close()
+
+    // update markdown content
+    updateContent(username, root, context)
+}
+
 private fun constructXmlFromKP(currentKP: KnowledgePoint): String {
     var entrySB = StringBuilder()
     entrySB.append("<kp name=\"${currentKP.name}\">")
@@ -333,14 +347,144 @@ private fun constructXmlFromKP(currentKP: KnowledgePoint): String {
     return entrySB.toString()
 }
 
-fun saveDataChanges(username: String, password: String, context: Context,
-                    root: KnowledgePoint): Boolean {
-    val KPStructureXmlString = constructXmlFromKP(root)
-    val printWriter = PrintWriter("${context.filesDir}/userdata/$username/kp_structure.xml")
-    return true
+private fun updateContent(username: String, currentKP: KnowledgePoint, context: Context) {
+    // update markdown
+    val printWriter = PrintWriter("${context.filesDir}/userdata/$username/content/" +
+            "${currentKP.name}.md")
+    printWriter.print(currentKP.markdownContent)
+    printWriter.close()
+    for (child in currentKP.childKPList) {
+        updateContent(username, child, context)
+    }
 }
 
+fun syncDataToServer(username: String, password: String, activity: SettingActivity) {
 
-fun syncDataToServer(username: String, password: String, activity: AppCompatActivity) {
+    // generate zip file
+    val fos = FileOutputStream("${activity.filesDir}/userdata/content.zip")
+    val zos = ZipOutputStream(fos)
 
+    val dirToZip = File("${activity.filesDir}/userdata/content")
+    zipFile(dirToZip, "content", zos)
+
+    fos.close()
+    zos.close()
+
+    //  upload
+    Thread(Runnable {
+        val resp1 = uploadStructureXml(username, password, activity)
+        val resp2 = uploadContentZip(username, password, activity)
+        activity.syncDataToServerReturn(resp1 && resp2)
+    }).start()
+}
+
+private fun zipFile(fileToZip: File, fileName: String, zos: ZipOutputStream) {
+    if (fileToZip.isHidden) {
+        return
+    }
+    if (fileToZip.isDirectory) {
+        val children = fileToZip.listFiles()
+        for (childFile in children!!) {
+            zipFile(childFile, fileName + "/" + childFile.name, zos)
+        }
+        return
+    }
+    val fis = FileInputStream(fileToZip)
+    val zipEntry = ZipEntry(fileName)
+    zos.putNextEntry(zipEntry)
+    val bytes = ByteArray(1024)
+    var length: Int
+    while (true) {
+        length = fis.read(bytes)
+        if (length >= 0) {
+            zos.write(bytes, 0, length)
+        } else {
+            break
+        }
+    }
+    fis.close()
+}
+
+private fun uploadStructureXml(username: String, password: String, context: Context): Boolean {
+    /* content zip*/
+    // get connection
+    val url = URL("$addr/UpdateKPStructureXml?username=$username&password=$password")
+    val connection = url.openConnection() as HttpURLConnection
+    connection.requestMethod = "POST"
+
+    // upload
+    val os = connection.outputStream
+    val fis = FileInputStream("${context.filesDir}/userdata/kp_structure.xml")
+    val buf = ByteArray(1024)
+    var length: Int
+    while (true) {
+        length = fis.read(buf)
+        if (length >= 0) {
+            os.write(buf)
+        } else {
+            break
+        }
+    }
+    fis.close()
+    os.close()
+
+    // get response
+    val reader = BufferedReader(InputStreamReader(connection.inputStream))
+    val sb = StringBuilder()
+    var line: String?
+    while (true) {
+        line = reader.readLine()
+        if (line != null) {
+            sb.appendln(line)
+        } else {
+            break
+        }
+    }
+    reader.close()
+
+    connection.disconnect()
+
+    return sb.toString() == goodResponse
+}
+
+private fun uploadContentZip(username: String, password: String, context: Context): Boolean {
+    /* content zip*/
+    // get connection
+    val contentZipUrl = URL("$addr/UpdateKPContentZip?username=$username&password=$password")
+    val contentZipConnection = contentZipUrl.openConnection() as HttpURLConnection
+    contentZipConnection.requestMethod = "POST"
+
+    // upload
+    val os = contentZipConnection.outputStream
+    val fis = FileInputStream("${context.filesDir}/userdata/content.zip")
+    val buf = ByteArray(1024)
+    var length: Int
+    while (true) {
+        length = fis.read(buf)
+        if (length >= 0) {
+            os.write(buf)
+        } else {
+            break
+        }
+    }
+    fis.close()
+    os.close()
+
+    // get response
+    val reader = BufferedReader(InputStreamReader(contentZipConnection.inputStream))
+    val contentZipResponseSb = StringBuilder()
+    var line: String?
+    while (true) {
+        line = reader.readLine()
+        if (line != null) {
+            contentZipResponseSb.appendln(line)
+        } else {
+            break
+        }
+    }
+    reader.close()
+
+    contentZipConnection.disconnect()
+
+    return contentZipResponseSb.toString() == goodResponse
 }
