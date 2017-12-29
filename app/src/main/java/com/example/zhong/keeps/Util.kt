@@ -361,10 +361,10 @@ private fun updateContent(username: String, currentKP: KnowledgePoint, context: 
 fun syncDataToServer(username: String, password: String, activity: SettingActivity) {
 
     // generate zip file
-    val fos = FileOutputStream("${activity.filesDir}/userdata/content.zip")
+    val fos = FileOutputStream("${activity.filesDir}/userdata/$username/content.zip")
     val zos = ZipOutputStream(fos)
 
-    val dirToZip = File("${activity.filesDir}/userdata/content")
+    val dirToZip = File("${activity.filesDir}/userdata/$username/content")
     zipFile(dirToZip, "content", zos)
 
     zos.close()
