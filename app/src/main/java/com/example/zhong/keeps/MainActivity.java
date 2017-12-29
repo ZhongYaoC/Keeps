@@ -51,12 +51,18 @@ public class MainActivity extends AppCompatActivity {
 
         UtilKt.initKnowledgePoints(account, password, MainActivity.this);
         Button back = findViewById(R.id.bt_back);
-        Button content = findViewById(R.id.bt_content);
+        final Button content = findViewById(R.id.bt_content);
         back.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                currentKP = currentKP.getParentKP();
-                drawCurrentKP();
+                if (currentKP != root){
+                    currentKP = currentKP.getParentKP();
+                    drawCurrentKP();
+                } else {
+                    Toast.makeText(MainActivity.this,"已经是根节点"
+                    ,Toast.LENGTH_SHORT).show();
+                }
+
             }
         });
         content.setOnClickListener(new View.OnClickListener() {
