@@ -48,37 +48,5 @@ public class SettingActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-        /*initSetting();
-        SettingsAdapter adapter = new SettingsAdapter(SettingActivity.this,
-                R.layout.settings,settingsList);
-        ListView listView = findViewById(R.id.settings_list);
-        listView.setAdapter(adapter);
-
-        listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if (i == 0 ){//Log out
-                    UserInfo userInfo = new UserInfo();
-                    userInfo.setOnline(0);
-                    userInfo.save();
-                    Intent intent = new Intent(SettingActivity.this,
-                            LoginActivity.class);
-
-                    startActivity(intent);
-
-                }else if (i == 1){//Syn
-                    setResult(1);
-                    finish();
-                }
-            }
-        });*/
     }
-    /*
-    private void initSetting(){
-        Settings Logout = new Settings("注销");
-        settingsList.add(Logout);
-        Settings syn = new Settings("同步");
-        settingsList.add(syn);
-    }*/
 }
