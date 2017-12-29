@@ -367,7 +367,6 @@ fun syncDataToServer(username: String, password: String, activity: SettingActivi
     val dirToZip = File("${activity.filesDir}/userdata/content")
     zipFile(dirToZip, "content", zos)
 
-    fos.close()
     zos.close()
 
     //  upload
