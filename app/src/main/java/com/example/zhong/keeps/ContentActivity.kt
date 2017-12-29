@@ -7,7 +7,6 @@ import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_content.*
-import kotlinx.android.synthetic.main.activity_test.*
 
 class ContentActivity : AppCompatActivity() {
 
@@ -33,7 +32,7 @@ class ContentActivity : AppCompatActivity() {
         when (item?.getItemId()) {
             R.id.update_content -> {
                 val intent = Intent()
-                intent.setClass(ContentActivity@this,ContentEditActivity::class.java)
+                intent.setClass(ContentActivity@this, EditActivity::class.java)
                 intent.putExtra("type",1)
                 intent.putExtra("content",MainActivity.currentKP.markdownContent)
                 startActivityForResult(intent, 1)
@@ -45,7 +44,13 @@ class ContentActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == 1) {
             if (resultCode == Activity.RESULT_OK) {
-                markdownView_content.loadMarkdown(data?.getStringExtra("content"))
+                val content = data?.getStringExtra("content")
+                if (content != null) {
+                    markdownView_content.loadMarkdown(content)
+                    MainActivity.currentKP.markdownContent = content
+                    saveDataChanges(MainActivity.account, MainActivity.password,
+                            ContentActivity@this, MainActivity.root)
+                }
             }
         }
     }

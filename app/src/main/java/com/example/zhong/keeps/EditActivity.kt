@@ -5,13 +5,13 @@ import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.TextView
-import kotlinx.android.synthetic.main.activity_content_edit.*
+import kotlinx.android.synthetic.main.activity_edit.*
 
-class ContentEditActivity : AppCompatActivity() {
+class EditActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_content_edit)
+        setContentView(R.layout.activity_edit)
         val type = intent.getIntExtra("type", 0)
 
         when (type) {

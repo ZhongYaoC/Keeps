@@ -3,7 +3,6 @@ package com.example.zhong.keeps;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,10 +15,7 @@ import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
-import java.util.ArrayList;
 import java.util.List;
-
-import us.feras.mdv.MarkdownView;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -173,7 +169,7 @@ public class MainActivity extends AppCompatActivity {
                 startActivityForResult(intent_set,SETTINGS);
                 break;
             case R.id.add_node:
-                Intent intent_add = new Intent(MainActivity.this,ContentEditActivity.class);
+                Intent intent_add = new Intent(MainActivity.this, EditActivity.class);
                 intent_add.putExtra("type",2);
                 startActivityForResult(intent_add,ADD_NODE);
                 break;

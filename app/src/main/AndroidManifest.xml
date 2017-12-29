@@ -33,7 +33,7 @@
             android:label="Search" />
         <activity android:name=".TestActivity" />
         <activity android:name=".ContentActivity" />
-        <activity android:name=".ContentEditActivity"></activity>
+        <activity android:name=".EditActivity"></activity>
     </application>
 
 </manifest>

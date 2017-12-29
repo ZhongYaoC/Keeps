@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.zhong.keeps.ContentEditActivity">
+    tools:context="com.example.zhong.keeps.EditActivity">
 
     <ScrollView
         android:layout_width="0dp"
@@ -27,7 +27,7 @@
                 android:id="@+id/editText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="请编辑笔记内容"
+                android:hint="请输入"
                 android:inputType="textMultiLine" />
         </LinearLayout>
     </ScrollView>
