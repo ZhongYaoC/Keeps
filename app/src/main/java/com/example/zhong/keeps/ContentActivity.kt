@@ -14,8 +14,8 @@ class ContentActivity : AppCompatActivity() {
         setContentView(R.layout.activity_content)
         setSupportActionBar(toolbar5)
 
-        val content = intent.getStringExtra("content")
-        if (content != null) {
+        val content = MainActivity.currentKP.markdownContent
+        if (content != "") {
             markdownView.loadMarkdown(content, "file:///android_asset/foghorn.css")
         } else {
             markdownView.loadMarkdown("no markdown note yet")

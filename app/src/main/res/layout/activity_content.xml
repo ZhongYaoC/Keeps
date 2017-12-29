@@ -21,5 +21,6 @@
     <us.feras.mdv.MarkdownView
         android:id="@+id/markdownView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></us.feras.mdv.MarkdownView>
+        android:layout_height="wrap_content"/>
 </LinearLayout>
+
