@@ -327,6 +327,10 @@ private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, userna
     throw Exception()
 }
 
-fun updateKnowledgePoints(username: String, password: String, activity: AppCompatActivity) {
+fun saveDataChanges(username: String, password: String, activity: AppCompatActivity) {
+
+}
+
+fun syncDataToServer(username: String, password: String, activity: AppCompatActivity) {
 
 }
