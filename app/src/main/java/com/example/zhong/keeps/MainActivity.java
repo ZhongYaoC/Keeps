@@ -16,6 +16,7 @@ import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import us.feras.mdv.MarkdownView;
@@ -177,8 +178,13 @@ public class MainActivity extends AppCompatActivity {
             case R.id.delete_node:
                 if (currentKP != root){
                     //删除当前节点
-
-                    //currentKP.getChildKPList().clear();
+                    List<KnowledgePoint> currentKpList = currentKP.getParentKP().getChildKPList();
+                    for (KnowledgePoint same_class_Kp:currentKpList){
+                        if (same_class_Kp.getName().equals(currentKP.getName())){
+                           int index = currentKpList.indexOf(same_class_Kp);
+                           currentKP.getParentKP().getChildKPList().remove(index);
+                        }
+                    }
                     currentKP = currentKP.getParentKP();
                 } else {
                     Toast.makeText(MainActivity.this,"当前为根节点，无法删除",
