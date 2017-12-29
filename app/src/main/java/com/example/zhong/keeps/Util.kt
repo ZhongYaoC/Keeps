@@ -17,7 +17,7 @@ val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
 val fuckResponse = "<status>3</status>"
 
-fun userLoginTest(username: String, password: String, activity: NetworkTestActivity) {
+fun userLoginTest(username: String, password: String, activity: TestActivity) {
     Thread(Runnable {
         val url = URL("$addr/UserLogin?username=$username&password=$password")
         // val url = URL("http://www.baidu.com")
@@ -184,7 +184,7 @@ fun initKnowledgePoints(username: String, password: String, activity: MainActivi
 }
 
 
-fun initKnowledgePointsTest(username: String, password: String, activity: NetworkTestActivity) {
+fun initKnowledgePointsTest(username: String, password: String, activity: TestActivity) {
     Thread(Runnable {
         // get structure xml
         val url = URL("$addr/GetKPStructureXml?username=$username&password=$password")
@@ -303,22 +303,18 @@ private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, userna
             }
             markdownContent = sb.toString()
         }
-
-        val kp = KnowledgePoint(name, markdownContent, parentKP, null)
+        val childKPs = mutableListOf<KnowledgePoint>()
+        val kp = KnowledgePoint(name, markdownContent, parentKP, childKPs)
         var eventType = parser.next()
         if (eventType == XmlPullParser.TEXT) {
            eventType = parser.next()
         }
-        val childKPs = mutableListOf<KnowledgePoint>()
         while (eventType == XmlPullParser.START_TAG) {
             childKPs.add(constructKP(parser, kp, username, context))
             eventType = parser.next()
             if (eventType == XmlPullParser.TEXT) {
                 eventType = parser.next()
             }
-        }
-        if (childKPs.isNotEmpty()) {
-            kp.childKPList = childKPs
         }
         if (eventType == XmlPullParser.END_TAG) {
             return kp
@@ -327,9 +323,23 @@ private fun constructKP(parser: XmlPullParser, parentKP: KnowledgePoint?, userna
     throw Exception()
 }
 
-fun saveDataChanges(username: String, password: String, activity: AppCompatActivity) {
-
+private fun constructXmlFromKP(currentKP: KnowledgePoint): String {
+    var entrySB = StringBuilder()
+    entrySB.append("<kp name=\"${currentKP.name}\">")
+    for (child in currentKP.childKPList) {
+        entrySB.append(constructXmlFromKP(child))
+    }
+    entrySB.append("</kp>")
+    return entrySB.toString()
 }
+
+fun saveDataChanges(username: String, password: String, context: Context,
+                    root: KnowledgePoint): Boolean {
+    val KPStructureXmlString = constructXmlFromKP(root)
+    val printWriter = PrintWriter("${context.filesDir}/userdata/$username/kp_structure.xml")
+    return true
+}
+
 
 fun syncDataToServer(username: String, password: String, activity: AppCompatActivity) {
 

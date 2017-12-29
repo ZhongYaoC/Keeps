@@ -9,5 +9,14 @@
     <us.feras.mdv.MarkdownView
         android:id="@+id/markdownView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></us.feras.mdv.MarkdownView>
+        android:layout_height="wrap_content">
+
+    </us.feras.mdv.MarkdownView>
+
+    <EditText
+        android:id="@+id/editText"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:ems="10"
+        android:inputType="text" />
 </android.support.constraint.ConstraintLayout>

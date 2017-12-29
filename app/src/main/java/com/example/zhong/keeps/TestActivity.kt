@@ -1,16 +1,18 @@
 package com.example.zhong.keeps
 
+import android.app.Activity
+import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
-import kotlinx.android.synthetic.main.activity_network_test.*
+import kotlinx.android.synthetic.main.activity_test.*
 import java.io.File
 
-class NetworkTestActivity : AppCompatActivity() {
+class TestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_network_test)
+        setContentView(R.layout.activity_test)
 
         val userDataDir = File(filesDir, "userdata")
         userDataDir.mkdir()
@@ -24,6 +26,19 @@ class NetworkTestActivity : AppCompatActivity() {
         }
         bt_content.setOnClickListener {
             initKnowledgePointsTest("root", "123456", NetworkTestActivity@this)
+        }
+        bt_edit.setOnClickListener {
+            val intent = Intent(TestActivity@this, ContentEditActivity::class.java)
+            intent.putExtra("content", "## hello")
+            startActivityForResult(intent, 1)
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                markdownView.loadMarkdown(data?.getStringExtra("content"))
+            }
         }
     }
 
