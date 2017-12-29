@@ -9,6 +9,7 @@ import kotlinx.android.synthetic.main.activity_test.*
 import java.io.File
 
 class TestActivity : AppCompatActivity() {
+    lateinit var root: KnowledgePoint
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,10 +28,11 @@ class TestActivity : AppCompatActivity() {
         bt_content.setOnClickListener {
             initKnowledgePointsTest("root", "123456", NetworkTestActivity@this)
         }
-        bt_edit.setOnClickListener {
-            val intent = Intent(TestActivity@this, ContentEditActivity::class.java)
-            intent.putExtra("content", "## hello")
-            startActivityForResult(intent, 1)
+        bt_save.setOnClickListener {
+            saveDataChanges("root", "123456", TestActivity@this, root)
+        }
+        bt_upload.setOnClickListener {
+            syncDataToServerTest("root", "123456", TestActivity@this)
         }
     }
 
@@ -56,6 +58,7 @@ class TestActivity : AppCompatActivity() {
         runOnUiThread {
             if (ok) {
                 if (root != null && root.childKPList != null) {
+                    this.root = root
                     markdownView.loadMarkdown(root.childKPList?.get(0)?.markdownContent)
                 }
             } else {
@@ -65,5 +68,9 @@ class TestActivity : AppCompatActivity() {
         }
     }
 
-
+    fun onSyncDataToServerReturn(ok: Boolean) {
+        runOnUiThread {
+            Toast.makeText(TestActivity@this, "is sync working $ok", Toast.LENGTH_LONG).show()
+        }
+    }
 }

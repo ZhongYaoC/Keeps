@@ -13,7 +13,7 @@ import java.util.zip.ZipInputStream
 import java.util.zip.ZipOutputStream
 
 
-val addr: String = "http://10.116.0.130:8080/keepsserver-1.0-SNAPSHOT"
+val addr: String = "http://localhost:8080/keepsserver-1.0-SNAPSHOT"
 val goodResponse = "<status>0</status>"
 val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
@@ -374,9 +374,29 @@ fun syncDataToServer(username: String, password: String, activity: SettingActivi
     Thread(Runnable {
         val resp1 = uploadStructureXml(username, password, activity)
         val resp2 = uploadContentZip(username, password, activity)
-        activity.syncDataToServerReturn(resp1 && resp2)
+        activity.onSyncDataToServerReturn(resp1 && resp2)
     }).start()
 }
+
+fun syncDataToServerTest(username: String, password: String, activity: TestActivity) {
+
+    // generate zip file
+    val fos = FileOutputStream("${activity.filesDir}/userdata/$username/content.zip")
+    val zos = ZipOutputStream(fos)
+
+    val dirToZip = File("${activity.filesDir}/userdata/$username/content")
+    zipFile(dirToZip, "content", zos)
+
+    zos.close()
+
+    //  upload
+    Thread(Runnable {
+        val resp1 = uploadStructureXml(username, password, activity)
+        val resp2 = uploadContentZip(username, password, activity)
+        activity.onSyncDataToServerReturn(resp1 && resp2)
+    }).start()
+}
+
 
 private fun zipFile(fileToZip: File, fileName: String, zos: ZipOutputStream) {
     if (fileToZip.isHidden) {
