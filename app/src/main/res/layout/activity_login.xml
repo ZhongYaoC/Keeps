@@ -66,6 +66,12 @@
         android:layout_height="60dp"
         android:text="登录" />
 
+    <Button
+        android:id="@+id/offline"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="离线模式" />
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

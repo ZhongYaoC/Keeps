@@ -19,6 +19,15 @@ val badResponse = "<status>1</status>"
 val shitResponse = "<status>2</status>"
 val fuckResponse = "<status>3</status>"
 
+fun addOfflineUser(username: String, password: String, activity: MainActivity) {
+    val userDataDir = File(activity.filesDir, "userdata")
+    userDataDir.mkdir()
+    val userDir = File(userDataDir, username)
+    userDir.mkdir()
+    val userContentDir = File(userDir, "content")
+    userContentDir.mkdir()
+}
+
 fun userLogin(username: String, password: String, activity: LoginActivity) {
     Thread(Runnable {
         val url = URL("$addr/UserLogin?username=$username&password=$password")

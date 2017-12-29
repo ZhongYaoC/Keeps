@@ -3,6 +3,7 @@ package com.example.zhong.keeps;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,9 @@ import android.widget.Toast;
 
 import org.litepal.crud.DataSupport;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -28,8 +32,8 @@ public class MainActivity extends AppCompatActivity {
     public static String account, password;
     public static KnowledgePoint root, currentKP;
     private ChildKPsAdapter adapter;
-    private List<KnowledgePoint> items;
     private String node_name;
+    public static Boolean offline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,16 +44,8 @@ public class MainActivity extends AppCompatActivity {
         toolbar = findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
+        offline = getIntent().getBooleanExtra("offline", false);
 
-        //Query
-        List<UserInfo> userInfos = DataSupport.select("user","password")
-                //.where("online = ?","1")
-                .find(UserInfo.class);
-
-        account = userInfos.get(0).getUser();
-        password = userInfos.get(0).getPassword();
-
-        UtilKt.initKnowledgePoints(account, password, MainActivity.this);
         Button back = findViewById(R.id.bt_back);
         final Button content = findViewById(R.id.bt_content);
         back.setOnClickListener(new View.OnClickListener() {
@@ -60,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                     drawCurrentKP();
                 } else {
                     Toast.makeText(MainActivity.this,"已经是根节点"
-                    ,Toast.LENGTH_SHORT).show();
+                            ,Toast.LENGTH_SHORT).show();
                 }
 
             }
@@ -81,6 +77,27 @@ public class MainActivity extends AppCompatActivity {
                 drawCurrentKP();
             }
         });
+
+        if (!offline) {
+            //Query
+            List<UserInfo> userInfos = DataSupport.select("user","password")
+                    //.where("online = ?","1")
+                    .find(UserInfo.class);
+
+            account = userInfos.get(0).getUser();
+            password = userInfos.get(0).getPassword();
+
+
+            UtilKt.initKnowledgePoints(account, password, MainActivity.this);
+        } else {
+            account = "offline";
+            password = "123456";
+            UtilKt.addOfflineUser(account, password, MainActivity.this);
+            root = new KnowledgePoint("root", "", null,
+                    new LinkedList<KnowledgePoint>());
+            currentKP = root;
+            drawCurrentKP();
+        }
     }
 
     private void drawCurrentKP() {
@@ -94,14 +111,17 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void initTitles(){
-        if (currentKP.getChildKPList() != null) {
-            items = currentKP.getChildKPList();
-            adapter.notifyDataSetChanged();
+        List<KnowledgePoint> items = currentKP.getChildKPList();
+        adapter = new ChildKPsAdapter(MainActivity.this,
+                R.layout.child_kp_item, items);
+        Log.d("fuck item", items.size() + "");
+        if (items.isEmpty()) {
+            listView.setVisibility(View.GONE);
         } else {
-            items.clear();
             adapter.notifyDataSetChanged();
+            listView.setAdapter(adapter);
+            listView.setVisibility(View.VISIBLE);
         }
-        listView.setAdapter(adapter);
     }
 
     public void onInitKnowledgePointsReturn(final Boolean ok, final KnowledgePoint kp) {
@@ -111,9 +131,6 @@ public class MainActivity extends AppCompatActivity {
                 if (ok) {
                     root = kp;
                     currentKP = kp;
-                    items = currentKP.getChildKPList();
-                    adapter = new ChildKPsAdapter(MainActivity.this,
-                            R.layout.child_kp_item, items);
                     drawCurrentKP();
                 } else {
                     // if failed
@@ -128,28 +145,30 @@ public class MainActivity extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SETTINGS: {
-                if (resultCode == 1) {
+                if (resultCode == RESULT_OK) {
                     UtilKt.initKnowledgePoints(account,password,MainActivity.this);
                 }
                 break;
             }
             case SEARCH: {
-                if (resultCode == 1) {
+                if (resultCode == RESULT_OK) {
                     drawCurrentKP();
                 }
+                break;
             }
             case ADD_NODE:  {
-                if (resultCode == 1){
+                if (resultCode == RESULT_OK){
                     node_name = data.getStringExtra("node_name");
-                    if (node_name.trim() != null){
-                        KnowledgePoint newKP = null;
-                        newKP.setName(node_name);
-                        newKP.setParentKP(currentKP.getParentKP());
+                    Log.d("fuck node name", node_name);
+                    if (node_name != null){
+                        KnowledgePoint newKP = new KnowledgePoint(node_name.trim(), "",
+                                currentKP, new LinkedList<KnowledgePoint>());
                         currentKP.getChildKPList().add(newKP);
-                        adapter.notifyDataSetChanged();
+                        initTitles();
                         UtilKt.saveDataChanges(account,password,MainActivity.this,root);
                     }
                 }
+                break;
             }
             default:
         }
@@ -190,6 +209,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     currentKP = currentKP.getParentKP();
+                    drawCurrentKP();
                     UtilKt.saveDataChanges(account,password,MainActivity.this,root);
                 } else {
                     Toast.makeText(MainActivity.this,"当前为根节点，无法删除",

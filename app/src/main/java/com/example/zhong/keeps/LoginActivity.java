@@ -16,7 +16,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private EditText accountEdit;
     private EditText passwordEdit;
-    private Button login;
+    private Button login,offline;
     private TextView register;
     private Toolbar toolbar;
 
@@ -28,36 +28,13 @@ public class LoginActivity extends AppCompatActivity {
         accountEdit = findViewById(R.id.account);
         passwordEdit = findViewById(R.id.password);
         login = findViewById(R.id.login);
+        offline = findViewById(R.id.offline);
         register = findViewById(R.id.register);
         toolbar = findViewById(R.id.toolbar1);
         setSupportActionBar(toolbar);
 
         //Create DB
         Connector.getDatabase();
-
-        /*
-        login.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                String account = accountEdit.getText().toString();
-                String password = passwordEdit.getText().toString();
-
-                //Query
-                List<UserInfo> userInfos = DataSupport.select("user","password")
-                        .where("user = ?",account)
-                        .where("password = ?",password)
-                        .find(UserInfo.class);
-
-                if (!(userInfos.isEmpty())){
-                    Intent intent = new Intent(LoginActivity.this,MainActivity.class);
-                    startActivity(intent);
-                    finish();
-                } else {
-                    Toast.makeText(LoginActivity.this,
-                            "account or password is invalid",Toast.LENGTH_SHORT).show();
-                }
-            }
-        });*/
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -66,6 +43,15 @@ public class LoginActivity extends AppCompatActivity {
                 String password = passwordEdit.getText().toString();
 
                 UtilKt.userLogin(account, password, LoginActivity.this);
+            }
+        });
+
+        offline.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                intent.putExtra("offline",true);
+                startActivity(intent);
             }
         });
 
@@ -100,8 +86,8 @@ public class LoginActivity extends AppCompatActivity {
                     user.save();
                     // if login succeeded
                     Intent intent = new Intent(LoginActivity.this,MainActivity.class);
+                    intent.putExtra("offline", false);
                     startActivity(intent);
-
                 } else {
                     // if failed
                     Toast.makeText(LoginActivity.this,

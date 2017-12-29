@@ -38,7 +38,6 @@ public class SettingActivity extends AppCompatActivity {
                 userInfo.save();
                 Intent intent = new Intent(SettingActivity.this,
                         LoginActivity.class);
-
                 startActivity(intent);
             }
         });
@@ -46,10 +45,14 @@ public class SettingActivity extends AppCompatActivity {
         syn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                account = MainActivity.account;
-                password = MainActivity.password;
-                UtilKt.syncDataToServer(account,password,SettingActivity.this);
-
+                if (!MainActivity.offline){
+                    account = MainActivity.account;
+                    password = MainActivity.password;
+                    UtilKt.syncDataToServer(account,password,SettingActivity.this);
+                } else {
+                    Toast.makeText(SettingActivity.this,"离线状态，无法同步"
+                            ,Toast.LENGTH_SHORT).show();
+                }
             }
         });
     }

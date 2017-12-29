@@ -10,6 +10,7 @@ import kotlinx.android.synthetic.main.activity_content.*
 
 class ContentActivity : AppCompatActivity() {
 
+    val style = "file:///android_asset/foghorn.css"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_content)
@@ -17,9 +18,9 @@ class ContentActivity : AppCompatActivity() {
 
         val content = MainActivity.currentKP.markdownContent
         if (content != "") {
-            markdownView_content.loadMarkdown(content, "file:///android_asset/foghorn.css")
+            markdownView_content.loadMarkdown(content, style)
         } else {
-            markdownView_content.loadMarkdown("no markdown note yet")
+            markdownView_content.loadMarkdown("*no markdown note yet*", style)
         }
     }
 
@@ -46,7 +47,7 @@ class ContentActivity : AppCompatActivity() {
             if (resultCode == Activity.RESULT_OK) {
                 val content = data?.getStringExtra("content")
                 if (content != null) {
-                    markdownView_content.loadMarkdown(content)
+                    markdownView_content.loadMarkdown(content, style)
                     MainActivity.currentKP.markdownContent = content
                     saveDataChanges(MainActivity.account, MainActivity.password,
                             ContentActivity@this, MainActivity.root)
