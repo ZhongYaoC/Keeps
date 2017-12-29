@@ -65,10 +65,6 @@ public class SearchActivity extends AppCompatActivity {
         });
     }
 
-
-
-
-
     private ArrayList<KnowledgePoint> selectKPs(KnowledgePoint root, String key) {
         ArrayList<KnowledgePoint> kps = new ArrayList<>();
         dfs(kps, root, key);

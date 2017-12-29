@@ -27,7 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private ListView listView;
     private TextView root_textView;
     private Toolbar toolbar;
-    String account, password;
+    public static String account, password;
     public static KnowledgePoint root, currentKP;
     private ChildKPsAdapter adapter;
     private List<KnowledgePoint> items;
@@ -120,12 +120,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar,menu);
-        return true;
-    }
-
-    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case SETTINGS: {
@@ -144,6 +138,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar,menu);
+        return true;
+    }
+
+    @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
             case R.id.search:
@@ -155,6 +155,10 @@ public class MainActivity extends AppCompatActivity {
                 //activity
                 Intent intent_set = new Intent(MainActivity.this,SettingActivity.class);
                 startActivityForResult(intent_set,SETTINGS);
+                break;
+            case R.id.update_node:
+
+                currentKP.getChildKPList().add()
                 break;
             default:
         }
