@@ -14,7 +14,12 @@
         app:showAsAction="never" />
 
     <item
-        android:id="@+id/update_node"
-        android:title="增删节点"
+        android:id="@+id/delete_node"
+        android:title="删除当前节点"
+        app:showAsAction="never" />
+
+    <item
+        android:id="@+id/add_node"
+        android:title="增加节点"
         app:showAsAction="never" />
 </menu>

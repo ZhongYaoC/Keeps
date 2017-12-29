@@ -1,11 +1,13 @@
 package com.example.zhong.keeps
 
+import android.app.Activity
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import kotlinx.android.synthetic.main.activity_content.*
+import kotlinx.android.synthetic.main.activity_test.*
 
 class ContentActivity : AppCompatActivity() {
 
@@ -16,9 +18,9 @@ class ContentActivity : AppCompatActivity() {
 
         val content = MainActivity.currentKP.markdownContent
         if (content != "") {
-            markdownView.loadMarkdown(content, "file:///android_asset/foghorn.css")
+            markdownView_content.loadMarkdown(content, "file:///android_asset/foghorn.css")
         } else {
-            markdownView.loadMarkdown("no markdown note yet")
+            markdownView_content.loadMarkdown("no markdown note yet")
         }
     }
 
@@ -31,11 +33,20 @@ class ContentActivity : AppCompatActivity() {
         when (item?.getItemId()) {
             R.id.update_content -> {
                 val intent = Intent()
-                //intent.setClass(ContentActivity@this,)
-                //intent.putExtra("content",)
-                //startActivity(intent)
+                intent.setClass(ContentActivity@this,ContentEditActivity::class.java)
+                intent.putExtra("type",1)
+                intent.putExtra("content",MainActivity.currentKP.markdownContent)
+                startActivityForResult(intent, 1)
             }
         }
         return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == 1) {
+            if (resultCode == Activity.RESULT_OK) {
+                markdownView_content.loadMarkdown(data?.getStringExtra("content"))
+            }
+        }
     }
 }

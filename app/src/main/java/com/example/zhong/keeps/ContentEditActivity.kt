@@ -12,13 +12,27 @@ class ContentEditActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_content_edit)
-        val content = intent.getStringExtra("content")
-        editText.setText(content, TextView.BufferType.EDITABLE)
-        bt_save.setOnClickListener {
-            val retIntent = Intent()
-            retIntent.putExtra("content", editText.text.toString().trim())
-            setResult(Activity.RESULT_OK, retIntent)
-            finish()
+        val type = intent.getIntExtra("type", 0)
+
+        when (type) {
+            1 -> {
+                val content = intent.getStringExtra("content")
+                editText.setText(content, TextView.BufferType.EDITABLE)
+                bt_save.setOnClickListener {
+                    val retIntent = Intent()
+                    retIntent.putExtra("content", editText.text.toString().trim())
+                    setResult(Activity.RESULT_OK, retIntent)
+                    finish()
+                }
+            }
+            2 -> {
+                bt_save.setOnClickListener {
+                    val retIntent = Intent()
+                    retIntent.putExtra("node_name", editText.text.toString().trim())
+                    setResult(Activity.RESULT_OK, retIntent)
+                    finish()
+                }
+            }
         }
     }
 }

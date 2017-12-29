@@ -19,7 +19,7 @@
     </LinearLayout>
 
     <us.feras.mdv.MarkdownView
-        android:id="@+id/markdownView"
+        android:id="@+id/markdownView_content"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 </LinearLayout>

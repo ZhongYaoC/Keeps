@@ -24,6 +24,7 @@ public class MainActivity extends AppCompatActivity {
 
     private final int SETTINGS = 1;
     private final int SEARCH = 2;
+    private final int ADD_NODE = 3;
     private ListView listView;
     private TextView root_textView;
     private Toolbar toolbar;
@@ -31,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
     public static KnowledgePoint root, currentKP;
     private ChildKPsAdapter adapter;
     private List<KnowledgePoint> items;
+    private String node_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -133,6 +135,17 @@ public class MainActivity extends AppCompatActivity {
                     drawCurrentKP();
                 }
             }
+            case ADD_NODE:  {
+                if (requestCode == 1){
+                    node_name = data.getStringExtra("node_name");
+                    if (node_name.trim() != null){
+                        KnowledgePoint newKP = null;
+                        newKP.setName(node_name);
+                        newKP.setParentKP(currentKP.getParentKP());
+                        currentKP.getChildKPList().add(newKP);
+                    }
+                }
+            }
             default:
         }
     }
@@ -156,10 +169,23 @@ public class MainActivity extends AppCompatActivity {
                 Intent intent_set = new Intent(MainActivity.this,SettingActivity.class);
                 startActivityForResult(intent_set,SETTINGS);
                 break;
-            case R.id.update_node:
-
-                currentKP.getChildKPList().add()
+            case R.id.add_node:
+                Intent intent_add = new Intent(MainActivity.this,ContentEditActivity.class);
+                intent_add.putExtra("type",2);
+                startActivityForResult(intent_add,ADD_NODE);
                 break;
+            case R.id.delete_node:
+                if (currentKP != root){
+                    //删除当前节点
+
+                    //currentKP.getChildKPList().clear();
+                    currentKP = currentKP.getParentKP();
+                } else {
+                    Toast.makeText(MainActivity.this,"当前为根节点，无法删除",
+                            Toast.LENGTH_LONG).show();
+                }
+                break;
+
             default:
         }
         return true;
