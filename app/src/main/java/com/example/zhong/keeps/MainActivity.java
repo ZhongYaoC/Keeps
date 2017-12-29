@@ -137,13 +137,15 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
             case ADD_NODE:  {
-                if (requestCode == 1){
+                if (resultCode == 1){
                     node_name = data.getStringExtra("node_name");
                     if (node_name.trim() != null){
                         KnowledgePoint newKP = null;
                         newKP.setName(node_name);
                         newKP.setParentKP(currentKP.getParentKP());
                         currentKP.getChildKPList().add(newKP);
+                        adapter.notifyDataSetChanged();
+                        UtilKt.saveDataChanges(account,password,MainActivity.this,root);
                     }
                 }
             }
@@ -186,6 +188,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                     currentKP = currentKP.getParentKP();
+                    UtilKt.saveDataChanges(account,password,MainActivity.this,root);
                 } else {
                     Toast.makeText(MainActivity.this,"当前为根节点，无法删除",
                             Toast.LENGTH_LONG).show();

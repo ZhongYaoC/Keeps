@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +49,7 @@ public class SettingActivity extends AppCompatActivity {
                 account = MainActivity.account;
                 password = MainActivity.password;
                 UtilKt.syncDataToServer(account,password,SettingActivity.this);
-                setResult(1);
-                finish();
+
             }
         });
     }
@@ -59,9 +59,12 @@ public class SettingActivity extends AppCompatActivity {
             @Override
             public void run() {
                 if (ok) {
-
+                    setResult(1);
+                    Toast.makeText(SettingActivity.this,"同步成功"
+                    ,Toast.LENGTH_SHORT).show();
                 } else {
-
+                    Toast.makeText(SettingActivity.this,"同步失败"
+                    ,Toast.LENGTH_SHORT).show();
                 }
             }
         });
