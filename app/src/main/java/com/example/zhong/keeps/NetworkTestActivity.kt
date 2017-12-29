@@ -4,17 +4,23 @@ import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import kotlinx.android.synthetic.main.activity_network_test.*
+import java.io.File
 
 class NetworkTestActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_network_test)
+
+        val userDataDir = File(filesDir, "userdata")
+        userDataDir.mkdir()
+        val userDir = File(userDataDir, "root")
+        userDir.mkdir()
+        val userContentDir = File(userDir, "content")
+        userContentDir.mkdir()
+
         bt_login.setOnClickListener {
             userLoginTest("root", "123456", NetworkTestActivity@this)
-        }
-        bt_xml.setOnClickListener {
-            //initKnowledgePoints("root","123456", NetworkTestActivity@this)
         }
         bt_content.setOnClickListener {
             initKnowledgePointsTest("root", "123456", NetworkTestActivity@this)
@@ -43,4 +49,6 @@ class NetworkTestActivity : AppCompatActivity() {
             }
         }
     }
+
+
 }
