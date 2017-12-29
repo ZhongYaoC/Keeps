@@ -53,4 +53,17 @@ public class SettingActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void syncDataToServerReturn(final Boolean ok) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                if (ok) {
+
+                } else {
+
+                }
+            }
+        });
+    }
 }
