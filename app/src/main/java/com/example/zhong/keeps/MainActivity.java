@@ -100,6 +100,12 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        DataSupport.deleteAll(UserInfo.class);
+    }
+
     private void drawCurrentKP() {
         initCurrentTitle();
         initTitles();

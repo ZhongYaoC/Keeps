@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import org.litepal.crud.DataSupport;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,6 +35,7 @@ public class SettingActivity extends AppCompatActivity {
         log_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                DataSupport.deleteAll(UserInfo.class,null,null);
                 UserInfo userInfo = new UserInfo();
                 userInfo.setOnline(0);
                 userInfo.save();

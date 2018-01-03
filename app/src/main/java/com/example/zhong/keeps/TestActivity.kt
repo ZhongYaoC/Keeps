@@ -34,6 +34,10 @@ class TestActivity : AppCompatActivity() {
         bt_upload.setOnClickListener {
             syncDataToServerTest("root", "123456", TestActivity@this)
         }
+        bt_save_ip.setOnClickListener {
+            ip = et_ip.text.toString().trim()
+            Toast.makeText(TestActivity@this, "current server ip $ip", Toast.LENGTH_LONG).show()
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
