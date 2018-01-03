@@ -386,10 +386,12 @@ fun syncDataToServer(username: String, password: String, activity: SettingActivi
 
     zos.close()
 
+    Log.d("fuck", "wtf")
     //  upload
     Thread(Runnable {
         val resp1 = uploadStructureXml(username, password, activity)
         val resp2 = uploadContentZip(username, password, activity)
+        Log.d("server", "$resp1   $resp2")
         activity.onSyncDataToServerReturn(resp1 && resp2)
     }).start()
 }
@@ -450,7 +452,7 @@ private fun uploadStructureXml(username: String, password: String, context: Cont
 
     // upload
     val os = connection.outputStream
-    val fis = FileInputStream("${context.filesDir}/userdata/kp_structure.xml")
+    val fis = FileInputStream("${context.filesDir}/userdata/$username/kp_structure.xml")
     val buf = ByteArray(1024)
     var length: Int
     while (true) {
@@ -479,8 +481,8 @@ private fun uploadStructureXml(username: String, password: String, context: Cont
     reader.close()
 
     connection.disconnect()
-
-    return sb.toString() == goodResponse
+    Log.d("response", sb.toString())
+    return sb.toString() == "$goodResponse\n"
 }
 
 private fun uploadContentZip(username: String, password: String, context: Context): Boolean {
@@ -492,7 +494,7 @@ private fun uploadContentZip(username: String, password: String, context: Contex
 
     // upload
     val os = contentZipConnection.outputStream
-    val fis = FileInputStream("${context.filesDir}/userdata/content.zip")
+    val fis = FileInputStream("${context.filesDir}/userdata/$username/content.zip")
     val buf = ByteArray(1024)
     var length: Int
     while (true) {
@@ -522,5 +524,5 @@ private fun uploadContentZip(username: String, password: String, context: Contex
 
     contentZipConnection.disconnect()
 
-    return contentZipResponseSb.toString() == goodResponse
+    return contentZipResponseSb.toString() == "$goodResponse\n"
 }

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
@@ -53,11 +54,11 @@ public class SettingActivity extends AppCompatActivity {
                     password = MainActivity.password;
                     UtilKt.syncDataToServer(account,password,SettingActivity.this);
                 } else {
-                    Toast.makeText(SettingActivity.this,"离线状态，无法同步"
-                            ,Toast.LENGTH_SHORT).show();
+                    Toast.makeText(SettingActivity.this,"离线状态，无法同步",Toast.LENGTH_SHORT).show();
                 }
             }
         });
+        Log.d("fuck", "fuck here");
     }
 
     public void onSyncDataToServerReturn(final Boolean ok) {
@@ -69,6 +70,7 @@ public class SettingActivity extends AppCompatActivity {
                     Toast.makeText(SettingActivity.this,"同步成功"
                     ,Toast.LENGTH_SHORT).show();
                 } else {
+                    Log.d("fuck", "final fuck");
                     Toast.makeText(SettingActivity.this,"同步失败"
                     ,Toast.LENGTH_SHORT).show();
                 }
